@@ -318,21 +318,24 @@ int client_s(int client_socket, int server_socket){
 		buffer[read_len]='\0';
 		printf("Pin from client:%s\n",buffer);
 		buffer[4]='\0';
-		printf("Comparison:%d\n",strcmp(pin,buffer));
-		if(strcmp(pin,buffer)==0){
-
+		int result = strcmp(pin,buffer);
+		printf("Comparison:%d\n",result);
+		if(result == 0){
 			strcpy(buffer2,"account no=");
 			strcat(buffer2,s.no);
-			strcat(buffer2,"\naccount_name=");
+			strcat(buffer2,"\naccount_name=\0");
 			strcat(buffer2,s.name);
-			strcat(buffer2,"\nbalance=");
-			strcat(buffer2,s.balance);
-			strcat(buffer2,"\npin=");
+			char balance[100];
+			sprintf(balance, "%d", s.balance);
+			strcat(buffer2,"\nbalance=\0");
+			strcat(buffer2,balance);
+			strcat(buffer2,"\npin=\0");
 			strcat(buffer2,s.pin);
-			strcat(buffer2,"\n\n");
+			strcat(buffer2,"\n\n\0");
 			strcat(buffer2,"1. withdraw\n2. deposit\n3. Modify PIN\n4. Exit\0");
-			strcpy(buffer,"placeholder");
+			strcpy(buffer,"placeholder\0");
 			printf("%s\n",buffer2);
+			
 			while(strcmp(buffer,"4\0")!=0){
 				write(client_socket, buffer2, strlen(buffer2));
 				read_len = read(client_socket, buffer, 1024);
